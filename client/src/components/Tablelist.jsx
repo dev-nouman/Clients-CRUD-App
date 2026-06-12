@@ -10,7 +10,7 @@ const Tablelist = ({ handleOpen }) => {
 
     return (
         <>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto mt-8">
                 <table className="table">
                     {/* head */}
                     <thead>
