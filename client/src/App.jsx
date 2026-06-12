@@ -8,7 +8,8 @@ const App = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [modalMode, setModalMode] = useState("add");
 
-  const handleIsOpen = (mode) => {
+  const handleOpen = (mode) => {
+    setModalMode(mode);
     setIsOpen(true);
   }
 
@@ -22,9 +23,9 @@ const App = () => {
 
   return (
     <>
-      <Navbar />
-      <Tablelist />
-      <ModalForm />
+      <Navbar onOpen={() => handleOpen('add')} />
+      <Tablelist handleOpen={handleOpen} />
+      <ModalForm isOpen={isOpen} onClose={() => setIsOpen(false)} onSubmit={handleSubmit} mode={modalMode} />
     </>
   )
 }

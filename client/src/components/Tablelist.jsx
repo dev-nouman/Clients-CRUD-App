@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Tablelist = () => {
+const Tablelist = ({ handleOpen }) => {
 
     const clients = [
         { id: 1, name: "John Doe", email: "johndoe@gmail.com", job: "developer", rate: "100", isActive: true },
@@ -24,9 +24,11 @@ const Tablelist = () => {
                         </tr>
                     </thead>
                     <tbody className="hover:bg-base-300">
-                        {/* row 1 */}
+
+                        {/* MAP ROWS */}
+
                         {clients.map((client) => (
-                            <tr>
+                            <tr key={client.id}>
                                 <th>{client.id}</th>
                                 <td>{client.name}</td>
                                 <td>{client.email}</td>
@@ -37,7 +39,7 @@ const Tablelist = () => {
                                         {client.isActive ? `Active` : `InActive`}
                                     </button>
                                 </td>
-                                <td><button className='btn btn-secondary w-15'>Update</button></td>
+                                <td><button className='btn btn-secondary w-15' onClick={() => handleOpen('edit')}>Update</button></td>
                                 <td><button className='btn btn-accent w-15'>Delete</button></td>
                             </tr>
                         ))}
