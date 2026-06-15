@@ -1,9 +1,8 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 
-const Tablelist = ({ handleOpen }) => {
+const Tablelist = ({ handleOpen, searchTerm, tableData, setTableData }) => {
 
-    const [tableData, setTableData] = useState([]);
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -18,10 +17,25 @@ const Tablelist = ({ handleOpen }) => {
         fetchData();
     }, [])
 
+    const handleDelete = async (clientId) => {
+        try {
+            await axios.delete(`http://localhost:3000/api/clients/${clientId}`);
+            setTableData(tableData.filter(client => client.id !== clientId));
+        } catch (error) {
+            console.error('Error deleting client:', error);
+        }
+    }
+
+    const filteredData = tableData.filter(client =>
+        client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        client.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        client.job.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
         <>
             {error && <div className="alert alert-error">{error}</div>}
-            
+
             <div className="overflow-x-auto mt-8">
                 <table className="table">
                     {/* head */}
@@ -39,7 +53,7 @@ const Tablelist = ({ handleOpen }) => {
 
                         {/* MAP ROWS */}
 
-                        {tableData.map((client) => (
+                        {filteredData.map((client) => (
                             <tr key={client.id}>
                                 <th>{client.id}</th>
                                 <td>{client.name}</td>
@@ -51,8 +65,8 @@ const Tablelist = ({ handleOpen }) => {
                                         {client.isactive ? `Active` : `InActive`}
                                     </button>
                                 </td>
-                                <td><button className='btn btn-secondary w-15' onClick={() => handleOpen('edit')}>Update</button></td>
-                                <td><button className='btn btn-accent w-15'>Delete</button></td>
+                                <td><button className='btn btn-secondary w-15' onClick={() => handleOpen('edit', client)}>Update</button></td>
+                                <td><button className='btn btn-accent w-15' onClick={() => handleDelete(client.id)}>Delete</button></td>
                             </tr>
                         ))}
                     </tbody>

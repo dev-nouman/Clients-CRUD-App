@@ -53,7 +53,7 @@ export const deleteClient = async (req, res) => {
 
 export const searchClients = async (req, res) => {
   try {
-    const searchTerm = req.query.q; // Get the search term from the query parameters
+    const searchTerm = req.query.q || "";
     const clients = await clientService.searchClients(searchTerm);
     res.status(200).json(clients);
   } catch (error) {

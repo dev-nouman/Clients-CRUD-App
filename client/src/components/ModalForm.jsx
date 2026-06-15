@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
-const ModalForm = ({ isOpen, onClose, mode, onSubmit }) => {
+const ModalForm = ({ isOpen, onClose, mode, onSubmit, clientData }) => {
 
     const [rate, setRate] = useState('')
     const [name, setName] = useState('')
@@ -13,6 +13,8 @@ const ModalForm = ({ isOpen, onClose, mode, onSubmit }) => {
         setStatus(e.target.value === 'active') // set status as boolean
     }
 
+
+
     const clearForm = () => {
         setName('')
         setEmail('')
@@ -21,14 +23,33 @@ const ModalForm = ({ isOpen, onClose, mode, onSubmit }) => {
         setStatus(false)
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const formData = { name, email, job, rate: parseFloat(rate), status }
-        onSubmit(formData)
-        clearForm()
-        onClose()
+        try {
+            const newClientData = { name, email, job, rate: Number(rate), isactive: status }
+            await onSubmit(newClientData);
+            clearForm();
+            onClose();
+        } catch (err) {
+            console.error("Error adding client", err);
+        }
     }
 
+    useEffect(() => {
+        if (mode === 'edit' && clientData) {
+            setName(clientData.name);
+            setEmail(clientData.email);
+            setJob(clientData.job);
+            setRate(clientData.rate);
+            setStatus(clientData.isActive);
+        } else {
+            setName('');
+            setEmail('');
+            setJob('');
+            setRate('');
+            setStatus(false);
+        }
+    }, [mode, clientData]);
 
     return (
         <>
@@ -78,7 +99,7 @@ const ModalForm = ({ isOpen, onClose, mode, onSubmit }) => {
                             type="submit"
                             className='btn btn-success'
                         >
-                            {mode === 'edit' ? "Save Changes" : "Add Client"}
+                            {mode === 'edit' ? 'Update Client' : 'Add Client'}
                         </button>
                     </form>
                 </div>
