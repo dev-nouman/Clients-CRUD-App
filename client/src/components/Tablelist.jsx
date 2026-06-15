@@ -1,15 +1,27 @@
-import React from 'react'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
 
 const Tablelist = ({ handleOpen }) => {
 
-    const clients = [
-        { id: 1, name: "John Doe", email: "johndoe@gmail.com", job: "developer", rate: "100", isActive: true },
-        { id: 2, name: "John1 Doe", email: "johndoe1@gmail.com", job: "developer", rate: "101", isActive: true },
-        { id: 3, name: "John2 Doe", email: "johndoe2@gmail.com", job: "developer", rate: "102", isActive: false }
-    ]
+    const [tableData, setTableData] = useState([]);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://localhost:3000/api/clients');
+                setTableData(response.data);
+            } catch (error) {
+                setError(error.message);
+            }
+        }
+        fetchData();
+    }, [])
 
     return (
         <>
+            {error && <div className="alert alert-error">{error}</div>}
+            
             <div className="overflow-x-auto mt-8">
                 <table className="table">
                     {/* head */}
@@ -27,7 +39,7 @@ const Tablelist = ({ handleOpen }) => {
 
                         {/* MAP ROWS */}
 
-                        {clients.map((client) => (
+                        {tableData.map((client) => (
                             <tr key={client.id}>
                                 <th>{client.id}</th>
                                 <td>{client.name}</td>
@@ -35,8 +47,8 @@ const Tablelist = ({ handleOpen }) => {
                                 <td>{client.job}</td>
                                 <td>{client.rate}</td>
                                 <td>
-                                    <button className={`btn rounded-full w-25 ${client.isActive ? `btn-primary` : `btn-outline btn-primary`}`}>
-                                        {client.isActive ? `Active` : `InActive`}
+                                    <button className={`btn rounded-full w-25 ${client.isactive ? `btn-primary` : `btn-outline btn-primary`}`}>
+                                        {client.isactive ? `Active` : `InActive`}
                                     </button>
                                 </td>
                                 <td><button className='btn btn-secondary w-15' onClick={() => handleOpen('edit')}>Update</button></td>
